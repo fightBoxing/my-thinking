@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <title>少年派的奇幻漂流 - 生存冒险</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐅</text></svg>">
+</head>
+<body>
+
+    <!-- Canvas 海浪背景 -->
+    <canvas id="wave-canvas"></canvas>
+
+    <!-- ============================== -->
+    <!-- Scene 1: 开场序幕 -->
+    <!-- ============================== -->
+    <div id="scene-intro" class="scene active">
+        <div class="intro-card glass-panel">
+            <h1 class="intro-title">少年派的奇幻漂流</h1>
+            <p class="intro-subtitle">Life of Pi — 太平洋生存冒险</p>
+
+            <div id="intro-text-area">
+                <p id="intro-text"></p>
+            </div>
+
+            <div class="intro-progress">
+                <div id="intro-progress-bar" class="intro-progress-bar"></div>
+            </div>
+
+            <button id="btn-start" class="btn-start" onclick="window.game && window.game.startGame()">
+                ⛵ 开始漂流
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- Scene 2: 主游戏界面 -->
+    <!-- ============================== -->
+    <div id="scene-game" class="scene">
+        <!-- 顶部状态栏 -->
+        <div class="top-bar">
+            <div class="day-info">
+                <span id="day-number" class="day-number">第 1 天</span>
+                <div class="day-progress-wrap">
+                    <div id="day-progress-bar" class="day-progress-bar"></div>
+                </div>
+                <span id="day-total" style="font-size:12px;color:var(--text-muted);">/ 227天</span>
+            </div>
+            <div class="top-right">
+                <div class="weather-display">
+                    <span id="weather-icon">☀️</span>
+                    <span id="weather-text">晴朗</span>
+                </div>
+                <div class="actions-remaining">
+                    行动 <span id="actions-left">2</span> / 2
+                </div>
+                <div class="difficulty-hint" id="difficulty-hint">⚠️ 阶段1</div>
+            </div>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="game-content">
+            <!-- 资源面板 -->
+            <div class="resource-panel glass-panel">
+                <div class="resource-panel-title">生存资源</div>
+                <div class="resources-grid">
+                    <!-- 食物 -->
+                    <div class="resource-item">
+                        <div class="resource-icon">🐟</div>
+                        <div class="resource-info">
+                            <div class="resource-label">
+                                <span class="resource-name">食物</span>
+                                <span id="val-food" class="resource-value">45</span>
+                            </div>
+                            <div class="resource-bar-wrap">
+                                <div id="bar-food" class="resource-bar food" style="width:45%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 淡水 -->
+                    <div class="resource-item">
+                        <div class="resource-icon">💧</div>
+                        <div class="resource-info">
+                            <div class="resource-label">
+                                <span class="resource-name">淡水</span>
+                                <span id="val-water" class="resource-value">40</span>
+                            </div>
+                            <div class="resource-bar-wrap">
+                                <div id="bar-water" class="resource-bar water" style="width:40%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 体力 -->
+                    <div class="resource-item">
+                        <div class="resource-icon">⚡</div>
+                        <div class="resource-info">
+                            <div class="resource-label">
+                                <span class="resource-name">体力</span>
+                                <span id="val-stamina" class="resource-value">65</span>
+                            </div>
+                            <div class="resource-bar-wrap">
+                                <div id="bar-stamina" class="resource-bar stamina" style="width:65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 虎之羁绊 -->
+                    <div class="resource-item">
+                        <div class="resource-icon">🐾</div>
+                        <div class="resource-info">
+                            <div class="resource-label">
+                                <span class="resource-name">虎之羁绊</span>
+                                <span id="val-tigerBond" class="resource-value">20</span>
+                            </div>
+                            <div class="resource-bar-wrap">
+                                <div id="bar-tigerBond" class="resource-bar tigerBond" style="width:20%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 信念 -->
+                    <div class="resource-item">
+                        <div class="resource-icon">🙏</div>
+                        <div class="resource-info">
+                            <div class="resource-label">
+                                <span class="resource-name">信念</span>
+                                <span id="val-faith" class="resource-value">70</span>
+                            </div>
+                            <div class="resource-bar-wrap">
+                                <div id="bar-faith" class="resource-bar faith" style="width:70%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Debuff 状态面板 -->
+            <div id="debuff-container" class="debuff-container" style="display:none">
+                <!-- Debuff 标签由 JS 动态生成 -->
+            </div>
+
+            <!-- 行动面板 -->
+            <div class="action-panel glass-panel">
+                <div class="action-panel-title">选择行动</div>
+                <div id="actions-grid" class="actions-grid">
+                    <!-- 行动按钮由 JS 动态生成 -->
+                </div>
+            </div>
+
+            <!-- 航行日志 -->
+            <div class="log-panel glass-panel">
+                <div class="log-panel-title">📜 航行日志</div>
+                <div id="log-entries" class="log-entries">
+                    <!-- 日志条目由 JS 动态插入 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- Scene 3: 事件弹窗 -->
+    <!-- ============================== -->
+    <div id="scene-event" class="scene">
+        <div class="event-card glass-panel">
+            <div id="event-illustration" class="event-illustration">⛈️</div>
+            <h2 id="event-title" class="event-title">事件标题</h2>
+            <p id="event-description" class="event-description">事件描述...</p>
+            <div id="event-choices" class="event-choices">
+                <!-- 选项按钮由 JS 动态生成 -->
+            </div>
+            <div id="event-result" class="event-result"></div>
+            <button id="btn-continue" class="btn-continue">继续</button>
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- Scene 4: 结局画面 -->
+    <!-- ============================== -->
+    <div id="scene-gameover" class="scene">
+        <div class="gameover-card glass-panel">
+            <div id="gameover-icon" class="gameover-icon">🌅</div>
+            <h1 id="gameover-title" class="gameover-title victory">游戏结束</h1>
+            <p id="gameover-description" class="gameover-description">描述...</p>
+            <div id="gameover-stats" class="stats-grid">
+                <!-- 统计数据由 JS 动态生成 -->
+            </div>
+            <button class="btn-restart" onclick="window.game && window.game.restart()">
+                🔄 再次启航
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- 日夜过渡遮罩 -->
+    <!-- ============================== -->
+    <div id="day-transition" class="day-transition">
+        <span id="day-transition-text" class="day-transition-text"></span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/game.js"></script>
+
+    <!-- iOS Safari viewport height fix -->
+    <script>
+    (function() {
+        function setVH() {
+            var vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', vh + 'px');
+        }
+        setVH();
+        window.addEventListener('resize', setVH);
+        window.addEventListener('orientationchange', function() {
+            setTimeout(setVH, 100);
+        });
+    })();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1386 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+/* ============================================================
+   CSS Variables - 海洋幻想主题
+   ============================================================ */
+:root {
+    /* 主色调 */
+    --primary: #F59E0B;
+    --primary-dark: #D97706;
+    --accent: #3B82F6;
+
+    /* 背景色 */
+    --bg-deep: #0A1628;
+    --bg-mid: #0F2440;
+    --bg-light: #1A3A5C;
+
+    /* 文字色 */
+    --text-bright: #F8FAFC;
+    --text-muted: #94A3B8;
+    --text-dim: #CBD5E1;
+
+    /* 功能色 */
+    --success: #22C55E;
+    --danger: #EF4444;
+    --warning: #F59E0B;
+    --info: #3B82F6;
+
+    /* 资源条颜色 */
+    --res-food: #F59E0B;
+    --res-water: #3B82F6;
+    --res-stamina: #22C55E;
+    --res-tiger: #EF4444;
+    --res-faith: #A855F7;
+
+    /* 毛玻璃 */
+    --glass-bg: rgba(15, 36, 64, 0.75);
+    --glass-border: rgba(148, 163, 184, 0.15);
+    --glass-blur: 12px;
+
+    /* 字体 */
+    --font-family: 'Montserrat', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+    /* 动画 */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.4s ease;
+    --transition-slow: 0.8s ease;
+}
+
+/* ============================================================
+   Base Reset & Global
+   ============================================================ */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font-family);
+    color: var(--text-bright);
+    background: var(--bg-deep);
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+/* ============================================================
+   Canvas Background
+   ============================================================ */
+#wave-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* ============================================================
+   Scene Container System
+   ============================================================ */
+.scene {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-slow), visibility var(--transition-slow);
+    pointer-events: none;
+}
+
+.scene.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* ============================================================
+   Glass Panel Component
+   ============================================================ */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+/* ============================================================
+   Scene 1: Intro
+   ============================================================ */
+#scene-intro {
+    z-index: 10;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 20px 0;
+}
+
+.intro-card {
+    max-width: 640px;
+    width: 90%;
+    text-align: center;
+    padding: 48px 40px;
+    position: relative;
+    margin: auto;
+}
+
+.intro-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 8px;
+    text-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+}
+
+.intro-subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    font-weight: 400;
+}
+
+#intro-text-area {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+#intro-text {
+    font-size: 18px;
+    line-height: 1.8;
+    color: var(--text-dim);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+#intro-text.visible {
+    opacity: 1;
+}
+
+.intro-progress {
+    width: 100%;
+    height: 3px;
+    background: rgba(148, 163, 184, 0.2);
+    border-radius: 2px;
+    margin: 24px 0;
+    overflow: hidden;
+}
+
+.intro-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+}
+
+.btn-start {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 40px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--bg-deep);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    animation: float 3s ease-in-out infinite;
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+    opacity: 0;
+    visibility: hidden;
+}
+
+.btn-start.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.btn-start:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 6px 30px rgba(245, 158, 11, 0.6);
+}
+
+.btn-start:active {
+    transform: scale(0.98);
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+/* ============================================================
+   Scene 2: Main Game
+   ============================================================ */
+#scene-game {
+    justify-content: flex-start;
+    padding-top: 0;
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    overflow: hidden;
+}
+
+/* Top Status Bar */
+.top-bar {
+    width: 100%;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10, 22, 40, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--glass-border);
+    z-index: 5;
+    flex-shrink: 0;
+}
+
+.day-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.day-number {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.day-progress-wrap {
+    width: 160px;
+    height: 6px;
+    background: rgba(148, 163, 184, 0.15);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.day-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+    border-radius: 3px;
+    transition: width var(--transition-normal);
+    width: 0%;
+}
+
+.top-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.weather-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.actions-remaining {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.actions-remaining span {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* Main Game Content */
+.game-content {
+    flex: 1;
+    width: 100%;
+    max-width: 900px;
+    display: block;
+    padding: 16px 24px 16px;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 auto;
+    min-height: 0;
+}
+
+.game-content > * + * {
+    margin-top: 16px;
+}
+
+/* Resource Panel */
+.resource-panel {
+    padding: 20px 24px;
+}
+
+.resource-panel-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+}
+
+.resources-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.resource-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.resource-icon {
+    font-size: 22px;
+    width: 32px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.resource-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.resource-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.resource-name {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.resource-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-bright);
+    transition: color var(--transition-fast);
+}
+
+.resource-bar-wrap {
+    width: 100%;
+    height: 8px;
+    background: rgba(148, 163, 184, 0.12);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.resource-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width var(--transition-normal), background-color var(--transition-normal);
+    position: relative;
+}
+
+.resource-bar.food { background: var(--res-food); }
+.resource-bar.water { background: var(--res-water); }
+.resource-bar.stamina { background: var(--res-stamina); }
+.resource-bar.tigerBond { background: var(--res-tiger); }
+.resource-bar.faith { background: var(--res-faith); }
+
+/* Low resource warning animation */
+.resource-bar.low {
+    animation: pulse-bar 1s ease-in-out infinite;
+}
+
+/* Critical resource - faster pulse */
+.resource-bar.critical {
+    animation: pulse-bar-critical 0.5s ease-in-out infinite;
+    background: var(--danger) !important;
+}
+
+@keyframes pulse-bar {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+@keyframes pulse-bar-critical {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+}
+
+.resource-value.low {
+    color: var(--danger);
+}
+
+.resource-value.critical {
+    color: var(--danger);
+    animation: pulse-text 0.5s ease-in-out infinite;
+}
+
+@keyframes pulse-text {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* ============================================================
+   Debuff Container
+   ============================================================ */
+.debuff-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0;
+}
+
+.debuff-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 20px;
+    font-size: 12px;
+    color: #FCA5A5;
+    cursor: help;
+    animation: debuffAppear 0.3s ease;
+}
+
+.debuff-icon {
+    font-size: 14px;
+}
+
+.debuff-name {
+    font-weight: 600;
+}
+
+.debuff-duration {
+    font-size: 11px;
+    color: rgba(252, 165, 165, 0.7);
+    margin-left: 2px;
+}
+
+@keyframes debuffAppear {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Difficulty hint */
+.difficulty-hint {
+    font-size: 12px;
+    color: var(--warning);
+    opacity: 0.7;
+}
+
+/* Action Panel */
+.action-panel {
+    padding: 20px 24px;
+}
+
+.action-panel-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 8px;
+    background: rgba(148, 163, 184, 0.06);
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: center;
+    color: var(--text-bright);
+    font-family: var(--font-family);
+}
+
+.action-btn:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: rgba(245, 158, 11, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.15);
+}
+
+.action-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.action-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    filter: grayscale(0.8);
+}
+
+.action-btn.action-danger {
+    border-color: rgba(239, 68, 68, 0.4);
+    background: rgba(239, 68, 68, 0.06);
+}
+
+.action-btn.action-danger::after {
+    content: '⚠';
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    font-size: 10px;
+}
+
+.action-btn {
+    position: relative;
+}
+
+.action-icon {
+    font-size: 28px;
+}
+
+.action-name {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.action-effect {
+    font-size: 10px;
+    color: var(--text-muted);
+    line-height: 1.3;
+}
+
+/* Log Panel */
+.log-panel {
+    padding: 16px 20px;
+    max-height: 180px;
+    min-height: 80px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.log-panel-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+}
+
+.log-entries {
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    scroll-behavior: smooth;
+}
+
+.log-entry {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-dim);
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+    animation: slideInLog 0.3s ease;
+}
+
+.log-entry .log-day {
+    color: var(--primary);
+    font-weight: 600;
+    margin-right: 6px;
+}
+
+@keyframes slideInLog {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   Scene 3: Event Modal
+   ============================================================ */
+#scene-event {
+    z-index: 20;
+    background: rgba(10, 22, 40, 0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.event-card {
+    max-width: 520px;
+    width: 90%;
+    padding: 36px 32px 28px;
+    text-align: center;
+    transform: translateY(40px);
+    transition: transform var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+#scene-event.active .event-card {
+    transform: translateY(0);
+}
+
+.event-illustration {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    background: rgba(245, 158, 11, 0.1);
+    border: 2px solid rgba(245, 158, 11, 0.2);
+}
+
+.event-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 16px;
+    text-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+}
+
+.event-description {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+    white-space: pre-line;
+}
+
+.event-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.event-choice-btn {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-bright);
+    background: rgba(148, 163, 184, 0.08);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: var(--font-family);
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.event-choice-btn:hover {
+    border-color: var(--primary);
+    background: rgba(245, 158, 11, 0.1);
+    transform: translateX(4px);
+}
+
+.event-choice-btn:active {
+    transform: translateX(2px);
+}
+
+.choice-effect-preview {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+/* Event Result Display */
+.event-result {
+    display: none;
+    padding: 16px;
+    margin-top: 16px;
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-dim);
+}
+
+.event-result.visible {
+    display: block;
+    animation: fadeIn 0.4s ease;
+}
+
+.btn-continue {
+    display: none;
+    margin: 16px auto 0;
+    padding: 12px 32px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--bg-deep);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: var(--font-family);
+}
+
+.btn-continue.visible {
+    display: inline-block;
+    animation: fadeIn 0.4s ease;
+}
+
+.btn-continue:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+}
+
+/* ============================================================
+   Scene 4: Game Over
+   ============================================================ */
+#scene-gameover {
+    z-index: 30;
+}
+
+.gameover-card {
+    max-width: 560px;
+    width: 90%;
+    padding: 48px 40px;
+    text-align: center;
+}
+
+.gameover-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+}
+
+.gameover-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.gameover-title.victory {
+    color: var(--primary);
+    text-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
+}
+
+.gameover-title.defeat {
+    color: var(--danger);
+    text-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+}
+
+.gameover-description {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+    white-space: pre-line;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.stat-item {
+    padding: 12px;
+    background: rgba(148, 163, 184, 0.06);
+    border-radius: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.btn-restart {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 40px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--bg-deep);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+    font-family: var(--font-family);
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.btn-restart:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 6px 30px rgba(245, 158, 11, 0.6);
+}
+
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4); }
+    50% { box-shadow: 0 4px 30px rgba(245, 158, 11, 0.7); }
+}
+
+/* ============================================================
+   Utility Animations
+   ============================================================ */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.value-change {
+    animation: bounce 0.3s ease;
+}
+
+/* ============================================================
+   Day Transition Overlay
+   ============================================================ */
+.day-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 15;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 22, 40, 0.9);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    pointer-events: none;
+}
+
+.day-transition.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.day-transition-text {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary);
+    text-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+}
+
+/* ============================================================
+   Responsive - Tablet (768px)
+   ============================================================ */
+@media (max-width: 768px) {
+    .actions-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .resources-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .intro-title {
+        font-size: 28px;
+    }
+
+    .intro-subtitle {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    #intro-text-area {
+        min-height: 150px;
+    }
+
+    #intro-text {
+        font-size: 16px;
+    }
+
+    .game-content {
+        padding: 12px 16px;
+    }
+
+    .game-content > * + * {
+        margin-top: 12px;
+    }
+
+    .event-card {
+        padding: 28px 24px 22px;
+    }
+
+    .event-title {
+        font-size: 20px;
+    }
+
+    .event-description {
+        font-size: 14px;
+        margin-bottom: 18px;
+    }
+
+    .gameover-card {
+        padding: 36px 28px;
+    }
+
+    .gameover-title {
+        font-size: 26px;
+    }
+
+    .gameover-description {
+        font-size: 14px;
+    }
+
+    .log-panel {
+        max-height: 150px;
+    }
+}
+
+/* ============================================================
+   Responsive - Mobile (480px)
+   ============================================================ */
+@media (max-width: 480px) {
+    /* 顶部状态栏：改为两行布局 */
+    .top-bar {
+        flex-wrap: wrap;
+        padding: 8px 12px;
+        gap: 6px;
+    }
+
+    .day-info {
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .day-number {
+        font-size: 16px;
+        white-space: nowrap;
+    }
+
+    .day-progress-wrap {
+        width: 80px;
+        height: 4px;
+    }
+
+    #day-total {
+        font-size: 10px !important;
+    }
+
+    .top-right {
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    .weather-display {
+        font-size: 12px;
+        gap: 3px;
+    }
+
+    .actions-remaining {
+        font-size: 12px;
+    }
+
+    .actions-remaining span {
+        font-size: 15px;
+    }
+
+    .difficulty-hint {
+        font-size: 10px;
+    }
+
+    /* 主游戏内容区 */
+    .game-content {
+        padding: 8px 8px;
+        max-width: 100%;
+    }
+
+    .game-content > * + * {
+        margin-top: 8px;
+    }
+
+    /* 资源面板 */
+    .resource-panel {
+        padding: 12px 12px;
+    }
+
+    .resource-panel-title {
+        font-size: 11px;
+        margin-bottom: 8px;
+    }
+
+    .resources-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 6px 10px;
+    }
+
+    .resource-icon {
+        font-size: 16px;
+        width: 22px;
+    }
+
+    .resource-name {
+        font-size: 11px;
+    }
+
+    .resource-value {
+        font-size: 11px;
+    }
+
+    .resource-bar-wrap {
+        height: 5px;
+    }
+
+    .resource-item {
+        gap: 6px;
+    }
+
+    /* 行动面板 */
+    .action-panel {
+        padding: 12px 12px;
+    }
+
+    .action-panel-title {
+        font-size: 11px;
+        margin-bottom: 8px;
+    }
+
+    .actions-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+    }
+
+    .action-btn {
+        padding: 8px 4px;
+        gap: 3px;
+        border-radius: 10px;
+    }
+
+    .action-icon {
+        font-size: 20px;
+    }
+
+    .action-name {
+        font-size: 10px;
+    }
+
+    .action-effect {
+        font-size: 8px;
+        line-height: 1.2;
+    }
+
+    /* Debuff 容器 */
+    .debuff-container {
+        gap: 6px;
+    }
+
+    .debuff-tag {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+
+    .debuff-icon {
+        font-size: 12px;
+    }
+
+    /* 日志面板 */
+    .log-panel {
+        padding: 10px 12px;
+        max-height: 100px;
+        min-height: 60px;
+    }
+
+    .log-panel-title {
+        font-size: 11px;
+        margin-bottom: 6px;
+    }
+
+    .log-entry {
+        font-size: 11px;
+        line-height: 1.4;
+        padding: 3px 0;
+    }
+
+    /* 开场序幕 */
+    .intro-card {
+        padding: 24px 16px;
+        width: 94%;
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+
+    .intro-title {
+        font-size: 22px;
+        margin-bottom: 4px;
+    }
+
+    .intro-subtitle {
+        font-size: 12px;
+        margin-bottom: 12px;
+    }
+
+    #intro-text-area {
+        min-height: 80px;
+        padding: 10px 0;
+    }
+
+    #intro-text {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .intro-progress {
+        margin: 12px 0;
+    }
+
+    .btn-start {
+        padding: 12px 32px;
+        font-size: 16px;
+    }
+
+    /* 事件弹窗 */
+    .event-card {
+        width: 94%;
+        padding: 24px 16px 20px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .event-illustration {
+        width: 60px;
+        height: 60px;
+        font-size: 30px;
+        margin-bottom: 14px;
+    }
+
+    .event-title {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    .event-description {
+        font-size: 13px;
+        line-height: 1.7;
+        margin-bottom: 16px;
+    }
+
+    .event-choice-btn {
+        padding: 12px 14px;
+        font-size: 13px;
+        border-radius: 10px;
+    }
+
+    .choice-effect-preview {
+        font-size: 10px;
+    }
+
+    .event-result {
+        padding: 12px;
+        font-size: 13px;
+    }
+
+    .btn-continue {
+        padding: 10px 28px;
+        font-size: 14px;
+    }
+
+    /* 结局画面 */
+    .gameover-card {
+        width: 94%;
+        padding: 32px 16px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .gameover-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+    }
+
+    .gameover-title {
+        font-size: 22px;
+        margin-bottom: 8px;
+    }
+
+    .gameover-description {
+        font-size: 13px;
+        line-height: 1.7;
+        margin-bottom: 20px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-bottom: 24px;
+    }
+
+    .stat-item {
+        padding: 10px 8px;
+    }
+
+    .stat-value {
+        font-size: 20px;
+    }
+
+    .stat-label {
+        font-size: 11px;
+    }
+
+    .btn-restart {
+        padding: 12px 32px;
+        font-size: 16px;
+    }
+
+    /* 日夜过渡 */
+    .day-transition-text {
+        font-size: 22px;
+    }
+
+    /* 毛玻璃面板圆角收窄 */
+    .glass-panel {
+        border-radius: 12px;
+    }
+}
+
+/* ============================================================
+   Responsive - Very Small (360px and below)
+   ============================================================ */
+@media (max-width: 360px) {
+    .top-bar {
+        padding: 6px 8px;
+    }
+
+    .day-number {
+        font-size: 14px;
+    }
+
+    .day-progress-wrap {
+        width: 60px;
+    }
+
+    .game-content {
+        padding: 6px 8px;
+    }
+
+    .game-content > * + * {
+        margin-top: 8px;
+    }
+
+    .actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+
+    .action-btn {
+        padding: 8px 4px;
+    }
+
+    .action-icon {
+        font-size: 20px;
+    }
+
+    .action-name {
+        font-size: 10px;
+    }
+
+    .intro-title {
+        font-size: 20px;
+    }
+
+    .event-card {
+        padding: 20px 12px 16px;
+    }
+
+    .event-title {
+        font-size: 16px;
+    }
+
+    .gameover-card {
+        padding: 24px 12px;
+    }
+}
+
+/* ============================================================
+   Safe Area (for notched phones)
+   ============================================================ */
+@supports (padding-top: env(safe-area-inset-top)) {
+    .top-bar {
+        padding-top: calc(8px + env(safe-area-inset-top));
+        padding-left: calc(12px + env(safe-area-inset-left));
+        padding-right: calc(12px + env(safe-area-inset-right));
+    }
+
+    .game-content {
+        padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+}
+
+/* ============================================================
+   Scrollbar Styling
+   ============================================================ */
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.2);
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.4);
+}

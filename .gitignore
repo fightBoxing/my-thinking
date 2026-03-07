@@ -1,0 +1,18 @@
+# IDE & Editor
+.codebuddy/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+
+# Runtime
+.game.pid
+*.log
